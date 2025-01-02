@@ -13,6 +13,7 @@ export default function SignIn() {
     e.preventDefault();
     setError("");
 
+    // credentials를 통해 NextAuth의 Credentials Provider 호출 
     const res = await signIn("credentials", {
       redirect: false,
       userId,
@@ -22,7 +23,7 @@ export default function SignIn() {
     if (res?.error) {
       setError(res.error);
     } else {
-      window.location.href = "/";
+      window.location.href = "/mypage";
     }
   };
 
@@ -32,6 +33,9 @@ export default function SignIn() {
         className="flex w-96 max-w-md h-full p-8 shadow-lg rounded-md"
         variant="bordered"
       >
+        <h1 className="text-center text-lg font-bold text-lime-700 mb-6">
+          Login
+        </h1>
         <Form onSubmit={handleLogin} className="flex flex-col space-y-4">
           {error && <p className="text-red-500 text-sm">{error}</p>}
 

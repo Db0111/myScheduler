@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
@@ -39,13 +38,19 @@ export async function POST(req: Request) {
         (If there is one subject, you can divide it into one subject a day.) 
         If the available time is 0, you cannot study, so give it a value with the string 'pass' on that day.
         
-        The study period is the year, month, and day based on the date the user enters now, and when you plan the planner based on the start date, please plan it in the form of 'Date (Sunday): amount of study'
-        In the study planner, the sum of the pages which you divide into study period MUST be equal to ${JSON.stringify(
+        The study period is the year, month, and day based on the date the user enters now, and when you plan the planner based on the start date, please:
+        1. Treat the start and end dates according to the current year.
+        2. Convert the start date (e.g., "1월 2일") to the correct date of the current year, considering the current month and year.
+        3. Determine the actual day of the week based on the start date (e.g., "Mon", "Tue", etc.).
+        4. Plan the study schedule in the format of: 
+            'Date (Day): {subject: pages, subject: pages, ...}'
+        5. Ensure the total pages planned across the period equal ${JSON.stringify(
           studyAmount,
           null,
           2
-        )}. (Do not exceed or be lack on your own.)
-        Respond in a clear, concise format with each day and its respective tasks.
+        )} exactly. (Do not exceed or be short.)
+        
+        Respond in a clear, concise format with each day and its respective tasks. And don't give me any descriptions, only give me planner.
         `;
 
     const completion = await openai.chat.completions.create({

@@ -9,6 +9,7 @@ const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "Credentials",
+      // 로그인 로직 (아이디, 비밀번호로 로그인)
       credentials: {
         userId: { label: "ID", type: "text" },
         password: { label: "Password", type: "password" },
@@ -21,6 +22,7 @@ const handler = NextAuth({
           where: { userId },
         });
 
+        // 유저 정보 없는 경우
         if (!user) {
           throw new Error("No user found with this ID");
         }

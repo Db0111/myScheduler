@@ -1,16 +1,11 @@
 "use client";
 
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  DateRangePicker,
-  Input,
-  Button,
-} from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Input, Button } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import useScheduleStore from "@/store/scheduleStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import usePlannerStore from "@/store/plannerStore";
+import { useRouter } from "next/navigation";
 
 export default function MyPage() {
   const { data: session } = useSession();
@@ -24,6 +19,8 @@ export default function MyPage() {
     setStudyAmount,
   } = useScheduleStore();
 
+  const { setPlanner } = usePlannerStore();
+  const router = useRouter();
   // gpt 에 플래너 요청
   const generatePlanner = async () => {
     try {
@@ -42,7 +39,8 @@ export default function MyPage() {
       const data = await response.json();
       if (response.ok) {
         console.log("Generated Planner:", data.planner);
-        alert(data.planner);
+        setPlanner(data.planner);
+        router.push("./result");
       } else {
         console.error("Error:", data.error);
       }
@@ -54,11 +52,11 @@ export default function MyPage() {
   const [subject, setSubject] = useState("");
   const [pages, setPages] = useState<number | "">("");
 
-  const handleStartDate = (startDate) => {
+  const handleStartDate = (startDate: string) => {
     useScheduleStore.getState().setStudyPeriod("startDate", startDate);
   };
 
-  const handleEndDate = (endDate) => {
+  const handleEndDate = (endDate: string) => {
     useScheduleStore.getState().setStudyPeriod("endDate", endDate);
   };
 
